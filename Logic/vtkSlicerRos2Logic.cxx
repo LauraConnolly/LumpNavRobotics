@@ -753,30 +753,40 @@ void vtkSlicerRos2Logic::initializeFkSolver(){
 
 void vtkSlicerRos2Logic::checkCollision()
 {
+  // This isn't really a robust solution (checks the color of the model to detect collision but it works for now)
   vtkMRMLModelNode *modelNode = vtkMRMLModelNode::SafeDownCast(this->GetMRMLScene()->GetFirstNodeByName("TumorModel"));
-  vtkMRMLModelNode *tipModelNode = vtkMRMLModelNode::SafeDownCast(this->GetMRMLScene()->GetFirstNodeByName("tip_model"));
-  vtkNew<vtkCollisionDetectionFilter> collisionFilter;
-  numberOfCollisions = 0;
-  collisionFlag = false;
-  vtkNew<vtkMatrix4x4> matrix;
-  vtkMRMLTransformNode *transformNode = vtkMRMLTransformNode::SafeDownCast(this->GetMRMLScene()->GetFirstNodeByName(("InitialPosition_tip")));
-  collisionFilter->SetMatrix( 0, matrix );
-  vtkNew<vtkMatrix4x4> tmatrix;
-  transformNode->GetMatrixTransformToWorld(tmatrix);
-  collisionFilter->SetMatrix( 1, tmatrix);
-  collisionFilter->SetInputData(0, modelNode->GetPolyData());
-  collisionFilter->SetInputData(1, tipModelNode->GetPolyData());
-  collisionFilter->Update();
-
-
-  if (collisionFilter->GetNumberOfContacts() > 0){
+  double* color = modelNode->GetDisplayNode()->GetColor();
+  if (color[0] == 1){
     collisionFlag = true;
-    modelNode->GetDisplayNode()->SetColor(1, 0, 0);
-    SetRobotCPTopic(); // this should send the hold in place command
+    SetRobotCPTopic();
   }
-
   else{
     collisionFlag = false;
-    modelNode->GetDisplayNode()->SetColor(0, 1, 0);
   }
+  // This code below is for the vtk collision filter
+  // vtkMRMLModelNode *tipModelNode = vtkMRMLModelNode::SafeDownCast(this->GetMRMLScene()->GetFirstNodeByName("tip_model"));
+  // vtkNew<vtkCollisionDetectionFilter> collisionFilter;
+  // numberOfCollisions = 0;
+  // collisionFlag = false;
+  // vtkNew<vtkMatrix4x4> matrix;
+  // vtkMRMLTransformNode *transformNode = vtkMRMLTransformNode::SafeDownCast(this->GetMRMLScene()->GetFirstNodeByName(("InitialPosition_tip")));
+  // collisionFilter->SetMatrix( 0, matrix );
+  // vtkNew<vtkMatrix4x4> tmatrix;
+  // transformNode->GetMatrixTransformToWorld(tmatrix);
+  // collisionFilter->SetMatrix( 1, tmatrix);
+  // collisionFilter->SetInputData(0, modelNode->GetPolyData());
+  // collisionFilter->SetInputData(1, tipModelNode->GetPolyData());
+  // collisionFilter->Update();
+
+
+  // if (collisionFilter->GetNumberOfContacts() > 0){
+  //   collisionFlag = true;
+  //   modelNode->GetDisplayNode()->SetColor(1, 0, 0);
+  //   SetRobotCPTopic(); // this should send the hold in place command
+  // }
+  //
+  // else{
+  //   collisionFlag = false;
+  //   modelNode->GetDisplayNode()->SetColor(0, 1, 0);
+  // }
 }
