@@ -123,10 +123,9 @@ void qSlicerRos2ModuleWidget::setup()
   this->connect(paramLineEdit, SIGNAL(returnPressed()), this, SLOT(onNodeOrParameterNameEntered()));
   this->connect(selectFileButton, SIGNAL(clicked(bool)), this, SLOT(onSelectFile()));
   this->connect(loadModelButton, SIGNAL(clicked(bool)), this, SLOT(onLoadModelButtonSelected()));
+  this->connect(d->collisionDetectionCheckBox, SIGNAL(clicked(bool)), this, SLOT(onCollisionDetectionBoxChecked()));
   // file dialog signals are weird so using the button as a place holder just so you can print the name of the file you selected
 
-  // Connect control topic line edit
-  this->connect(d->controlTopicLineEdit, SIGNAL(returnPressed()), this, SLOT(onControlTopicNameEntered()));
   // Set default, assuming defaults are:
   // - state if from tf
   // - model is from param
@@ -245,11 +244,10 @@ void qSlicerRos2ModuleWidget::onTopicNameEntered()
   std::cerr << "Topic name entered: " << topic.toStdString() << std::endl;
 }
 
-void qSlicerRos2ModuleWidget::onControlTopicNameEntered()
+void qSlicerRos2ModuleWidget::onCollisionDetectionBoxChecked()
 {
   Q_D(qSlicerRos2ModuleWidget);
   // Get the topic name that was entered ( we will need it later)
-  QString controlTopic = d->controlTopicLineEdit->text();
   vtkSlicerRos2Logic *
     logic = vtkSlicerRos2Logic::SafeDownCast(this->logic());
   if (!logic) {
@@ -259,7 +257,7 @@ void qSlicerRos2ModuleWidget::onControlTopicNameEntered()
   //logic->SetRobotCPTopic(); // don't call this here - the collision filter should call it
   // logic->SetRobotStateTopic(topic.toStdString());
   //logic->SetRobotCPTopic();
-  std::cerr << "Topic name entered: " << controlTopic.toStdString() << std::endl;
+  logic->SetCollisionDetectionMode();
 }
 
 

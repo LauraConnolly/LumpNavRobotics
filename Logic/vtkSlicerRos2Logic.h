@@ -94,6 +94,7 @@ public:
   void Spin(void);
   void Clear();
   void BroadcastTransform();
+  void SetCollisionDetectionMode();
 
 protected:
   vtkSlicerRos2Logic();
@@ -165,6 +166,8 @@ private:
   std::unique_ptr<tf2_ros::TransformBroadcaster> mTfBroadcaster;
 
   void initializeFkSolver();
+
+  bool collisionDetection = false;
 
 };
 

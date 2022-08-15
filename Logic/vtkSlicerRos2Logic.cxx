@@ -501,7 +501,9 @@ void vtkSlicerRos2Logic::Spin(void)
     rclcpp::spin_some(mNodePointer);
     if (mModel.Loaded && !mRobotState.sendingTf && !mRobotState.IsUsingTopic) {
       queryTfNode();
-      checkCollision();
+      if (collisionDetection == true){
+        checkCollision();
+      }
     }
     else if (mModel.Loaded && mRobotState.sendingTf && !mRobotState.IsUsingTopic){
       BroadcastTransform();
@@ -671,6 +673,16 @@ void vtkSlicerRos2Logic::SetRobotStateTf(){
     mJointStateSubscription.reset();
   }
 
+}
+
+void vtkSlicerRos2Logic::SetCollisionDetectionMode(){
+  if(collisionDetection == false){
+    collisionDetection = true;
+  }
+  else{
+    collisionDetection = false;
+  }
+  std::cerr << "Collision detection checked:" << collisionDetection << std::endl;
 }
 
 void vtkSlicerRos2Logic::BroadcastTransform(){
