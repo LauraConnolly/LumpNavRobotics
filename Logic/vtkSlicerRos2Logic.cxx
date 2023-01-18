@@ -32,6 +32,7 @@
 #include <vtkMRMLModelStorageNode.h>
 #include <vtkMRMLDisplayNode.h>
 #include <vtkMRMLModelDisplayNode.h>
+#include "vtkMRMLBreachWarningNode.h"
 
 // VTK includes
 #include <vtkMatrix4x4.h>
@@ -775,6 +776,13 @@ void vtkSlicerRos2Logic::checkCollision()
   else{
     collisionFlag = false;
   }
+
+  vtkMRMLBreachWarningNode *breachWarning = vtkMRMLBreachWarningNode::SafeDownCast(this->GetMRMLScene()->GetFirstNodeByName("BreachWarning"));
+  if (breachWarning){
+    bool inModel = breachWarning->IsToolTipInsideModel();
+    std::cerr << "Breach warning" << inModel << std::endl;
+  }
+  
   // This code below is for the vtk collision filter
   // vtkMRMLModelNode *tipModelNode = vtkMRMLModelNode::SafeDownCast(this->GetMRMLScene()->GetFirstNodeByName("tip_model"));
   // vtkNew<vtkCollisionDetectionFilter> collisionFilter;

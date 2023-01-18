@@ -4,6 +4,7 @@ find_package(Slicer REQUIRED COMPONENTS ConfigurePrerequisites)
 cmake_minimum_required(VERSION 3.5)
 project(SlicerRos2)
 
+find_package(SlicerIGT REQUIRED)
 #---------------------------------------------------------------------------
 find_package(orocos_kdl REQUIRED)
 IF (orocos_kdl_FOUND)
@@ -23,6 +24,7 @@ find_package(urdf REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(rqt_gui_cpp REQUIRED)
+
 #-----------------------------------------------------------------------------
 
 set(MODULE_NAME Ros2)
@@ -43,7 +45,7 @@ include(${Slicer_USE_FILE})
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-
+set(EXTENSION_DEPENDS SlicerIGT)
 #---------------------------------------------------------------------------
 
 add_subdirectory(Logic)
@@ -93,7 +95,7 @@ slicerMacroBuildLoadableModule(
   SRCS ${MODULE_SRCS}
   MOC_SRCS ${MODULE_MOC_SRCS}
   UI_SRCS ${MODULE_UI_SRCS}
-  TARGET_LIBRARIES ${MODULE_TARGET_LIBRARIES}  ${kdl_parser_LIBRARIES} ${urdf_LIBRARIES} ${tf2_ros_LIBRARIES} ${tf2_LIBRARIES} ${rqt_gui_cpp_LIBRARIES}
+  TARGET_LIBRARIES ${MODULE_TARGET_LIBRARIES}  ${kdl_parser_LIBRARIES} ${urdf_LIBRARIES} ${tf2_ros_LIBRARIES} ${tf2_LIBRARIES} ${rqt_gui_cpp_LIBRARIES} ${SlicerIGT_LIBRARIES}
   RESOURCES ${MODULE_RESOURCES}
   WITH_GENERIC_TESTS
   )
